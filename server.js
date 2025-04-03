@@ -6,18 +6,23 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(cors({
+ origin:'*',
+ methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}));
+const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "/")));
 
-app.get("*", (req, res) => {
+app.get("/*", (req, res) => {
 	res.sendFile(path.join(__dirname, "index.html"));
 });
 app.get('/take-screenshot', async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
-    await page.goto('http://localhost:5500/index.html', { waitUntil: 'networkidle2' }); 
+    await page.goto(`http://localhost:{PORT}/index.html`, { waitUntil: 'networkidle2' }); 
     const screenshot = await page.screenshot({ fullPage: true });
     await browser.close();
     res.type('image/png');
