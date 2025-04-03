@@ -14,9 +14,13 @@ app.use(cors({
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
-app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.get('/take-screenshot', async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: "new" });
