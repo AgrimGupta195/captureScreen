@@ -3,7 +3,6 @@ const puppeteer = require('puppeteer');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,25 +21,21 @@ app.get('/take-screenshot', async (req, res) => {
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath:'/usr/bin/chromium-browser'
+      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser'
     });
-
     const page = await browser.newPage();
     await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle2' });
-
     const screenshot = await page.screenshot({ fullPage: true });
     await browser.close();
-
-    res.set({
-      'Content-Type': 'image/png',
-      'Content-Disposition': 'attachment; filename="screenshot.png"'
-    });
-    res.send(screenshot);
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Disposition', 'attachment; filename="screenshot.png"');
+    res.end(screenshot);
   } catch (error) {
     console.error('❌ Error capturing screenshot:', error);
     res.status(500).json({ error: 'Screenshot failed', details: error.message });
   }
 });
+
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "public", "index.html"));
 });
