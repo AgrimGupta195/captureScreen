@@ -230,7 +230,7 @@
 </body>
 <script>
     document.getElementById('screenshotBtn').addEventListener('click', () => {
-      fetch('http://localhost:3000/take-screenshot')
+      fetch('/take-screenshot')
         .then(response => response.blob())
         .then(blob => {
           const link = document.createElement('a');

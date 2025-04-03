@@ -2,21 +2,20 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 const cors = require('cors');
 const path = require('path');
-
+const dotenv = require('dotenv');
+dotenv.config();
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors({
  origin:'*',
  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
-const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, "/")));
-
+app.use(express.static(path.join(__dirname, "public")));
 app.get("/*", (req, res) => {
-	res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 app.get('/take-screenshot', async (req, res) => {
   try {
@@ -32,4 +31,4 @@ app.get('/take-screenshot', async (req, res) => {
     res.status(500).send('Screenshot failed');
   }
 });
-app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
