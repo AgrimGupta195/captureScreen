@@ -17,7 +17,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-app.get("*", (req, res) => {
+
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
@@ -25,7 +26,7 @@ app.get('/take-screenshot', async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
-    await page.goto(`http://localhost:{PORT}/index.html`, { waitUntil: 'networkidle2' }); 
+    await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle2' }); 
     const screenshot = await page.screenshot({ fullPage: true });
     await browser.close();
     res.type('image/png');
